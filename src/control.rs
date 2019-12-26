@@ -1,8 +1,13 @@
-use crate::{DroneDrivers, DroneSensors};
+use crate::{Drivers, Sensors};
 
-fn drone(_sensors: &DroneSensors, drivers: &mut DroneDrivers) {
-    drivers.fl = 1.0;
-    drivers.fr = 1.0;
-    drivers.bl = 1.0;
-    drivers.br = 1.0;
+pub struct Controller {}
+
+impl Controller {
+    pub fn new() -> Self {
+        Controller {}
+    }
+
+    pub fn control(&mut self, _sensors: &Sensors, drivers: &mut Drivers) {
+        drivers.lin = 0.0;
+    }
 }

@@ -4,6 +4,8 @@ use nphysics3d::{joint, object, world};
 
 mod control;
 
+use control::Controller;
+
 type F = f32;
 
 type Color = nalgebra::Point3<F>;
@@ -46,38 +48,31 @@ trait Graphics {
     }
 }
 
-struct DroneSensors {
-    x: F,      // m
-    y: F,      // m
-    z: F,      // m
-    vx: F,     // m/s
-    vy: F,     // m/s
-    vz: F,     // m/s
-    pitch: F,  // rad, 0 is level
-    roll: F,   // rad, 0 is level
-    yaw: F,    // rad, 0 is north
-    vpitch: F, // rad/s
-    vroll: F,  // rad/s
-    vyaw: F,   // rad/s
+struct Sensors {
+    lin: F,   // m
+    angle: F, // rad, 0 is up
 }
 
-struct DroneDrivers {
-    fl: F, // pwm duty cycle
-    fr: F, // pwm duty cycle
-    bl: F, // pwm duty cycle
-    br: F, // pwm duty cycle
+struct Drivers {
+    lin: F, // newton
 }
 
 struct Drone {
     body_handle: BodyHandle,
+    controller: Controller,
 }
 
 impl Drone {
     fn step(&mut self) {
         // - compute sensors
-        // - get motors from control
-        // - limit motors
-        // - compute motor forces
+        let lin = 0.0;
+        let angle = 0.0;
+        let sensors = Sensors { lin, angle };
+        // - get drivers from control
+        let mut drivers = Drivers { lin: 0.0 };
+        self.controller.control(&sensors, &mut drivers);
+        // - limit drivers
+        // - compute driver forces
         // - compute drag forces
         // - apply forces and torques
     }
@@ -119,6 +114,7 @@ fn main() {
 
     let mut drone = Drone {
         body_handle: body_set.insert(drone_body),
+        controller: Controller::new(),
     };
 
     let mut camera = kiss3d::camera::ArcBall::new(p(4.0, 2.0, 0.0), p(0.0, 1.0, 0.0));
