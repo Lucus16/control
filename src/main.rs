@@ -169,8 +169,8 @@ fn sim(window: &mut Window) -> bool {
             &mut force_generators,
         );
 
-        let wind_x_delta: F = rng.gen_range(-1.0, 1.0) * WIND_DELTA;
-        let wind_z_delta: F = rng.gen_range(-1.0, 1.0) * WIND_DELTA;
+        let wind_x_delta: F = rng.gen_range(-1.0..1.0) * WIND_DELTA;
+        let wind_z_delta: F = rng.gen_range(-1.0..1.0) * WIND_DELTA;
         wind.x = (wind.x + wind_x_delta) * WIND_FACTOR;
         wind.x = 0.0;
         wind.z = (wind.z + wind_z_delta) * WIND_FACTOR;

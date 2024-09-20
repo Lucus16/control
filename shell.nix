@@ -1,20 +1,24 @@
 { pkgs ? import <nixpkgs> {} }:
 
-with pkgs;
-
 let
-  libraries = lib.makeLibraryPath [
-    # vulkan-loader
-    xorg.libXcursor
-    xorg.libXrandr
-    xorg.libXi
-    xlibs.libX11
+  libraries = with pkgs; [
+    alsaLib
     libglvnd
+    udev
+    xorg.libXcursor
+    xorg.libXi
+    xorg.libXrandr
+    xorg.libxcb
+  ];
+in pkgs.mkShell {
+  nativeBuildInputs = with pkgs; [
+    cargo
+    cargo-watch
+    cmake
+    pkg-config
+    rustfmt
   ];
 
-in mkShell {
-  buildInputs = [ cargo cargo-watch cmake rustfmt ];
-  shellHook = ''
-    export LD_LIBRARY_PATH=${libraries}
-  '';
+  buildInputs = libraries;
+  LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath libraries;
 }
